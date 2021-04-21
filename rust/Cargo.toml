@@ -1,0 +1,19 @@
+[package]
+name = "filecoin-signer-wrapper"
+version = "0.1.0"
+authors = ["Steven <capricorn0113@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+anyhow = "1.0"
+libc = "0.2.93"
+
+serde = "1.0"
+serde_json = "1.0"
+
+hex = { git = "https://github.com/Zondax/rust-hex", rev="6e35fb48999278c8c6c75b099baa4ea2a9d1d12b" }
+filecoin-signer = { git = "https://github.com/Zondax/filecoin-signing-tools.git", tag = "v0.14.0" }
+forest_address = "0.3"

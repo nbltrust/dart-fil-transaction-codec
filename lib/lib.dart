@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'package:ffi/ffi.dart';
-import './bindings.dart';
+import 'bindings.dart';
 
 const DYNAMIC_LIBRARY_FILE_NAME = "";
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:mylib/mylib.dart';
+import 'package:fil_codec/lib.dart';
 
 void main() => runApp(MyApp());
 

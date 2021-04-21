@@ -1,6 +1,6 @@
 #import <Flutter/Flutter.h>
 
-@interface MylibPlugin : NSObject<FlutterPlugin>
+@interface FilCodecPlugin : NSObject<FlutterPlugin>
 @end
 // NOTE: Append the lines below to ios/Classes/<your>Plugin.h
 

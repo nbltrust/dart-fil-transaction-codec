@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fil_codec/lib.dart';
+import 'package:fil_codec/fil_codec.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,12 +19,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void initPlatformState() {
-    // sync call
-    String response = FilCodec.publicKeyToAddress(
-        "048bfab3a70675389cf61836a09d2dd7a61163905d88c0d507ed18a1b94e7119f3e36646cd711337f373b91814fe7258a58e2206273620f71254928389930abd70");
+    Map tx = FilTransaction.deserialize(
+        "8a005501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c62855011eaf1c8a4bbfeeb0870b1745b1f57503470b71160144000186a01961a84200014200010040");
 
     setState(() {
-      _response = response;
+      _response = (tx as FilTransaction).hashToSign().toString();
+      // _response = tx['to'];
     });
   }
 

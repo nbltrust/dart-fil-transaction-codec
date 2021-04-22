@@ -37,6 +37,18 @@ class FilCodecBindings {
 
   _dart_tx_encode _tx_encode;
 
+  ffi.Pointer<ffi.Int8> tx_digest(
+    ffi.Pointer<ffi.Int8> cbor,
+  ) {
+    _tx_digest ??=
+        _dylib.lookupFunction<_c_tx_digest, _dart_tx_digest>('tx_digest');
+    return _tx_digest(
+      cbor,
+    );
+  }
+
+  _dart_tx_digest _tx_digest;
+
   ffi.Pointer<ffi.Int8> public_key_to_address(
     ffi.Pointer<ffi.Int8> pubkey,
     int testnet,
@@ -88,6 +100,14 @@ typedef _c_tx_encode = ffi.Pointer<ffi.Int8> Function(
 
 typedef _dart_tx_encode = ffi.Pointer<ffi.Int8> Function(
   ffi.Pointer<ffi.Int8> json,
+);
+
+typedef _c_tx_digest = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> cbor,
+);
+
+typedef _dart_tx_digest = ffi.Pointer<ffi.Int8> Function(
+  ffi.Pointer<ffi.Int8> cbor,
 );
 
 typedef _c_public_key_to_address = ffi.Pointer<ffi.Int8> Function(

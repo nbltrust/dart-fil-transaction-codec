@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   ffi: ^0.1.3
+  quiver: ^2.1.5
+  convert: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +63,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 
 ffigen:
-  output: lib/bindings.dart
+  output: lib/src/bindings.dart
   headers:
     entry-points:
     - rust/target/bindings.h

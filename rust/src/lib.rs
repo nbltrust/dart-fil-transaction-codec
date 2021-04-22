@@ -44,6 +44,24 @@ pub extern "C" fn tx_encode(json: *const c_char,
     let tx = tx.get_message();
 
     let result = transaction_serialize(&tx).unwrap();
+
+    let result = hex::encode(&result);
+
+    let result = CString::new(result).unwrap();
+    result.into_raw()
+}
+
+#[no_mangle]
+pub extern "C" fn tx_digest(cbor: *const c_char) -> *mut c_char {
+    let cbor = unsafe {
+        assert!(!cbor.is_null());
+
+        CStr::from_ptr(cbor)
+    };
+    let cbor = cbor.to_str().unwrap();
+    let bytes: &[u8] = &hex::decode(&cbor).unwrap();
+
+    let result = utils::get_digest(bytes).unwrap();
     let result = hex::encode(&result);
 
     let result = CString::new(result).unwrap();
@@ -92,7 +110,7 @@ pub extern "C" fn ffi_dummy() {
 
 #[cfg(test)]
 mod tests {
-    use crate::{tx_decode, tx_encode, public_key_to_address};
+    use crate::{tx_decode, tx_encode, tx_digest, public_key_to_address};
     use libc::c_char;
     use std::ffi::{CStr, CString};
 
@@ -128,5 +146,20 @@ mod tests {
         // println!("address: {}", address);
 
         assert_eq!(address, "f1j5klxt6zktifpibt7jlafmdxkfe4fwjhm6yqjhq");
+    }
+
+    #[test]
+    fn test_digest_message() {
+        let cbor = CString::new("885501fd1d0f4dfcd7e99afcb99a8326b7dc459d32c6285501b882619d46558f3d9e316d11b48dcf211327025a0144000186a0430009c4430061a80040").unwrap();
+        let cbor: *const c_char = cbor.as_ptr() as *const c_char;
+
+        let message_digest: *mut c_char = tx_digest(cbor);
+        let message_digest = unsafe { CStr::from_ptr(message_digest) };
+        let message_digest = message_digest.to_str().unwrap();
+
+        assert_eq!(
+            message_digest,
+            "5a51287d2e5401b75014da0f050c8db96fe0bacdad75fce964520ca063b697e1"
+        );
     }
 }

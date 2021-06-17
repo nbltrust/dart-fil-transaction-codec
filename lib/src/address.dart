@@ -7,6 +7,10 @@ String paddingZero(String hexStr) {
 }
 
 String publicKeyToAddress(String hexX, String hexY, {bool testnet = false}) {
-  final plainKey = paddingZero(hexX) + paddingZero(hexY);
+  var plainKey = paddingZero(hexX) + paddingZero(hexY);
+  if (plainKey.length == 128) {
+    plainKey = '04' + plainKey;
+  }
+
   return FilCodec.publicKeyToAddress(plainKey, testnet: testnet);
 }

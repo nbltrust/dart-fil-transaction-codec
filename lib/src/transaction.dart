@@ -34,6 +34,6 @@ class FilTransaction extends DelegatingMap {
   }
 
   Uint8List hashToSign() {
-    return hex.decode(FilCodec.txDigest(this.delegate['cbor']));
+    return Uint8List.fromList(hex.decode(FilCodec.txDigest(this.delegate['cbor'])));
   }
 }

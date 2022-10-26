@@ -1,3 +1,4 @@
+library fil_codec.ffi;
 import 'dart:ffi';
 import 'dart:io';
 import 'package:ffi/ffi.dart';
@@ -18,13 +19,14 @@ class FilCodec {
   }
 
   static String publicKeyToAddress(String plainKey, {bool testnet = false}) {
-    final ptrPlainKey = Utf8.toUtf8(plainKey).cast<Int8>();
+
+    final ptrPlainKey = plainKey.toNativeUtf8().cast<Char>();
 
     // Native call
     final ptrResult = _bindings.public_key_to_address(ptrPlainKey, testnet ? 1 : 0);
 
     // Cast the result pointer to a Dart string
-    final result = Utf8.fromUtf8(ptrResult.cast<Utf8>());
+    final result = ptrResult.cast<Utf8>().toDartString();
 
     // Clone the given result, so that the original string can be freed
     final resultCopy = "" + result;
@@ -36,13 +38,13 @@ class FilCodec {
   }
 
   static String txDecode(String hex, {bool testnet = false}) {
-    final ptrHex = Utf8.toUtf8(hex).cast<Int8>();
+    final ptrHex = hex.toNativeUtf8().cast<Char>();
 
     // Native call
     final ptrResult = _bindings.tx_decode(ptrHex, testnet ? 1 : 0);
 
     // Cast the result pointer to a Dart string
-    final result = Utf8.fromUtf8(ptrResult.cast<Utf8>());
+    final result = ptrResult.cast<Utf8>().toDartString();
 
     // Clone the given result, so that the original string can be freed
     final resultCopy = "" + result;
@@ -54,13 +56,13 @@ class FilCodec {
   }
 
   static String txEncode(String json) {
-    final ptrJson = Utf8.toUtf8(json).cast<Int8>();
+    final ptrJson = json.toNativeUtf8().cast<Char>();
 
     // Native call
     final ptrResult = _bindings.tx_encode(ptrJson);
 
     // Cast the result pointer to a Dart string
-    final result = Utf8.fromUtf8(ptrResult.cast<Utf8>());
+    final result = ptrResult.cast<Utf8>().toDartString();
 
     // Clone the given result, so that the original string can be freed
     final resultCopy = "" + result;
@@ -72,13 +74,13 @@ class FilCodec {
   }
 
   static String txDigest(String hex) {
-    final ptrHex = Utf8.toUtf8(hex).cast<Int8>();
+    final ptrHex = hex.toNativeUtf8().cast<Char>();
 
     // Native call
     final ptrResult = _bindings.tx_digest(ptrHex);
 
     // Cast the result pointer to a Dart string
-    final result = Utf8.fromUtf8(ptrResult.cast<Utf8>());
+    final result = ptrResult.cast<Utf8>().toDartString();
 
     // Clone the given result, so that the original string can be freed
     final resultCopy = "" + result;
@@ -91,7 +93,7 @@ class FilCodec {
 
   /// Releases the memory allocated to handle the given (result) value
   static void _free(String value) {
-    final ptr = Utf8.toUtf8(value).cast<Void>();
+    final ptr = value.toNativeUtf8().cast<Void>();
     return _bindings.ffi_free(ptr);
   }
 }

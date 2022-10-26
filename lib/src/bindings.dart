@@ -5,129 +5,101 @@ import 'dart:ffi' as ffi;
 
 /// Dart bindings to call rust native functions
 class FilCodecBindings {
-  /// Holds the Dynamic library.
-  final ffi.DynamicLibrary _dylib;
+  /// Holds the symbol lookup function.
+  final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
+      _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
-  FilCodecBindings(ffi.DynamicLibrary dynamicLibrary) : _dylib = dynamicLibrary;
+  FilCodecBindings(ffi.DynamicLibrary dynamicLibrary)
+      : _lookup = dynamicLibrary.lookup;
 
-  ffi.Pointer<ffi.Int8> tx_decode(
-    ffi.Pointer<ffi.Int8> cbor,
+  /// The symbols are looked up with [lookup].
+  FilCodecBindings.fromLookup(
+      ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
+          lookup)
+      : _lookup = lookup;
+
+  ffi.Pointer<ffi.Char> tx_decode(
+    ffi.Pointer<ffi.Char> cbor,
     int testnet,
   ) {
-    _tx_decode ??=
-        _dylib.lookupFunction<_c_tx_decode, _dart_tx_decode>('tx_decode');
     return _tx_decode(
       cbor,
       testnet,
     );
   }
 
-  _dart_tx_decode _tx_decode;
+  late final _tx_decodePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>, ffi.Int)>>('tx_decode');
+  late final _tx_decode = _tx_decodePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>, int)>();
 
-  ffi.Pointer<ffi.Int8> tx_encode(
-    ffi.Pointer<ffi.Int8> json,
+  ffi.Pointer<ffi.Char> tx_encode(
+    ffi.Pointer<ffi.Char> json,
   ) {
-    _tx_encode ??=
-        _dylib.lookupFunction<_c_tx_encode, _dart_tx_encode>('tx_encode');
     return _tx_encode(
       json,
     );
   }
 
-  _dart_tx_encode _tx_encode;
+  late final _tx_encodePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>>('tx_encode');
+  late final _tx_encode = _tx_encodePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
 
-  ffi.Pointer<ffi.Int8> tx_digest(
-    ffi.Pointer<ffi.Int8> cbor,
+  ffi.Pointer<ffi.Char> tx_digest(
+    ffi.Pointer<ffi.Char> cbor,
   ) {
-    _tx_digest ??=
-        _dylib.lookupFunction<_c_tx_digest, _dart_tx_digest>('tx_digest');
     return _tx_digest(
       cbor,
     );
   }
 
-  _dart_tx_digest _tx_digest;
+  late final _tx_digestPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>>('tx_digest');
+  late final _tx_digest = _tx_digestPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
 
-  ffi.Pointer<ffi.Int8> public_key_to_address(
-    ffi.Pointer<ffi.Int8> pubkey,
+  ffi.Pointer<ffi.Char> public_key_to_address(
+    ffi.Pointer<ffi.Char> pubkey,
     int testnet,
   ) {
-    _public_key_to_address ??= _dylib.lookupFunction<_c_public_key_to_address,
-        _dart_public_key_to_address>('public_key_to_address');
     return _public_key_to_address(
       pubkey,
       testnet,
     );
   }
 
-  _dart_public_key_to_address _public_key_to_address;
+  late final _public_key_to_addressPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>, ffi.Int)>>('public_key_to_address');
+  late final _public_key_to_address = _public_key_to_addressPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>, int)>();
 
   void ffi_free(
     ffi.Pointer<ffi.Void> ptr,
   ) {
-    _ffi_free ??=
-        _dylib.lookupFunction<_c_ffi_free, _dart_ffi_free>('ffi_free');
     return _ffi_free(
       ptr,
     );
   }
 
-  _dart_ffi_free _ffi_free;
+  late final _ffi_freePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'ffi_free');
+  late final _ffi_free =
+      _ffi_freePtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void ffi_dummy() {
-    _ffi_dummy ??=
-        _dylib.lookupFunction<_c_ffi_dummy, _dart_ffi_dummy>('ffi_dummy');
     return _ffi_dummy();
   }
 
-  _dart_ffi_dummy _ffi_dummy;
+  late final _ffi_dummyPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function()>>('ffi_dummy');
+  late final _ffi_dummy = _ffi_dummyPtr.asFunction<void Function()>();
 }
-
-typedef _c_tx_decode = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> cbor,
-  ffi.Int32 testnet,
-);
-
-typedef _dart_tx_decode = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> cbor,
-  int testnet,
-);
-
-typedef _c_tx_encode = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> json,
-);
-
-typedef _dart_tx_encode = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> json,
-);
-
-typedef _c_tx_digest = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> cbor,
-);
-
-typedef _dart_tx_digest = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> cbor,
-);
-
-typedef _c_public_key_to_address = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> pubkey,
-  ffi.Int32 testnet,
-);
-
-typedef _dart_public_key_to_address = ffi.Pointer<ffi.Int8> Function(
-  ffi.Pointer<ffi.Int8> pubkey,
-  int testnet,
-);
-
-typedef _c_ffi_free = ffi.Void Function(
-  ffi.Pointer<ffi.Void> ptr,
-);
-
-typedef _dart_ffi_free = void Function(
-  ffi.Pointer<ffi.Void> ptr,
-);
-
-typedef _c_ffi_dummy = ffi.Void Function();
-
-typedef _dart_ffi_dummy = void Function();

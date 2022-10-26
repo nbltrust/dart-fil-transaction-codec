@@ -3,7 +3,9 @@ import UIKit
 
 public class SwiftFilCodecPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    // We are not using Flutter channels here
+    let channel = FlutterMethodChannel(name: "fil_codec", binaryMessenger: registrar.messenger())
+    let instance = SwiftFilCodecPlugin()
+    registrar.addMethodCallDelegate(instance, channel: channel)
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
